@@ -7,4 +7,8 @@ object Logger {
 
   // TODO mocked
   def askCardsFile(player: String): String = ""
+
+  def sayGameResultsAndEndIt(): Unit = {
+    println("\nGame is over!")
+  }
 }
