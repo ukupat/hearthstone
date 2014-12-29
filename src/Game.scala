@@ -1,21 +1,19 @@
+import data.{MinionCard, SpellCard}
 
 class Game(val bluePlayer: Player, val redPlayer: Player) {
 
   var round: Int = 0
 
   def startPlaying(): Unit = {
-     while (round != -1) {
-       makePlayerMove()
-       round = newRound()
-     }
-  }
+    bluePlayer.takeStartingCards()
+    redPlayer.takeStartingCards()
 
-  private def makePlayerMove(): Unit = {
-    startNewRound()
-    carryOutAttackerMoves()
+    while (round != -1) {
+      startNewRound()
+      carryOutAttackerMoves()
 
-    // REMOVE for testing
-    opponent.heroHealth -= 1
+      round = nextRound()
+    }
   }
 
   private def startNewRound(): Unit = {
@@ -34,17 +32,71 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
     Logger.sayThat("# Your moves\n")
 
     movesFromHand()
+    movesFromBoard()
   }
 
   private def movesFromHand(): Unit = {
     Logger.sayThat("## From hand\n")
 
-    if (!Referee.hasAnythingToMove(attacker)) {
-      Logger.sayThat("I: No cards to play from hand, skipping hand play!")
-      return
+    while (true) {
+      if (!Referee.hasAnythingToMove(attacker)) {
+        Logger.sayThat("\nI: No cards to play from hand, skipping")
+        return
+      }
+      val answer = Logger.askWhichCardToUseFromHand(attacker)
+
+      if (answer == "*") {
+        return
+      }
+      val cardToMove = attacker.cardHand(answer.toInt)
+
+      if (cardToMove.isInstanceOf[SpellCard]) {
+        // TODO spell cards
+      } else {
+        attacker.moveCardFromHandToBoard(cardToMove)
+
+        // TODO effects
+      }
     }
-    val cardToMove = Logger.askWhichCardToUseFromHand(attacker)
-    attacker.moveCardFromHandToBoard(cardToMove)
+  }
+
+  // TODO problem that player can infinitely play with minions
+  private def movesFromBoard(): Unit = {
+    Logger.sayThat("\n## From board\n")
+
+    while (true) {
+      if (!Referee.hasMinionsOnBoard(attacker)) {
+        Logger.sayThat("\nI: No cards to play from board, skipping")
+        return
+      }
+      var answer = Logger.askToChooseMinionFromBoard(attacker)
+
+      if (answer == "*")
+        return
+
+      val chosenMinion: MinionCard = attacker.cardBoard(answer.toInt).asInstanceOf[MinionCard]
+
+      answer = Logger.askTarget(opponent)
+
+      if (answer != "h")
+        attack(chosenMinion, opponent.cardBoard(answer.toInt).asInstanceOf[MinionCard])
+      else
+        attackHero(chosenMinion)
+    }
+  }
+
+  private def attackHero(minion: MinionCard): Unit = {
+    opponent.heroHealth -= minion.currentAttack
+  }
+
+  private def attack(minion: MinionCard, target: MinionCard): Unit = {
+    target.currentHealth -= minion.currentAttack
+    minion.currentHealth -= target.currentAttack
+
+    if (minion.currentHealth <= 0)
+      attacker.cardBoard -= minion
+    if (target.currentHealth <= 0)
+      opponent.cardBoard -= target
   }
 
   private def attacker: Player = {
@@ -61,7 +113,7 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
       redPlayer
   }
 
-  private def newRound(): Int = {
+  private def nextRound(): Int = {
     if (Referee.isGameOver(redPlayer, bluePlayer)) {
       Logger.sayGameResultsAndEndIt()
       -1

@@ -1,5 +1,4 @@
 
-import data.Card
 import scala.io.StdIn
 
 object Logger {
@@ -34,17 +33,43 @@ object Logger {
     }
   }
 
-  // TODO make sure that the input is int
-  def askWhichCardToUseFromHand(player: Player): Card = {
-    println("Q: Which card do you want to use?")
+  def askWhichCardToUseFromHand(player: Player): String = {
+    println("\n### Your card hand\n\n" + player.getCardsListInString(player.cardHand, true))
+    println("Q: Which card do you want to use? (* for no card)")
 
-    var cardIndex: Int = StdIn.readInt()
+    var answer: String = StdIn.readLine().trim
 
-    while (Referee.isCardFromHandValid(cardIndex, player)) {
-      print("-> Invalid input. Write the card index, " + player.name + ":\n")
-      cardIndex = StdIn.readInt()
+    while (answer != "*" && !Referee.isCardFromHandValid(answer, player)) {
+      print("-> Invalid input. Write the card index or *, " + player.name + ":\n")
+      answer = StdIn.readLine().trim
     }
-    player.cardHand(cardIndex)
+    answer
+  }
+
+  def askToChooseMinionFromBoard(player: Player): String = {
+    println("\n### Your card board\n\n" + player.getCardsListInString(player.cardBoard, false))
+    println("Q: Which card you want to choose from Board to Attack? (* for no card)")
+
+    var answer: String = StdIn.readLine().trim
+
+    while (answer != "*" && !Referee.isCardFromBoardValid(answer, player)) {
+      print("-> Invalid input. Write the card index or *, " + player.name + ":\n")
+      answer = StdIn.readLine().trim
+    }
+    answer
+  }
+
+  def askTarget(player: Player): String = {
+    println("\n### Opponent card board\n\n" + player.getCardsListInString(player.cardBoard, false))
+    println("Q: What do you want to attack? (h for hero)")
+
+    var answer: String = StdIn.readLine().trim
+
+    while (answer != "h" && !Referee.isAttackedCardValid(answer, player)) {
+      print("-> Invalid input. Write the card index or h (hero):\n")
+      answer = StdIn.readLine().trim
+    }
+    answer
   }
 
   def sayThat(message: String): Unit = {

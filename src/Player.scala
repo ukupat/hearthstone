@@ -19,7 +19,7 @@ class Player(val name: String, var cardDeck: List[Card]) {
 
   def getCardsListInString(cards: ListBuffer[Card], manaFilter: Boolean): String = {
     if (cards.length == 0)
-      return "No cards\n"
+      return "Not a single card\n"
 
     var ret = ""
     var i = 0
@@ -35,21 +35,30 @@ class Player(val name: String, var cardDeck: List[Card]) {
     ret
   }
 
-  // TODO randomize the card pick
+  def takeStartingCards(): Unit = {
+    takeCard()
+    takeCard()
+    takeCard()
+  }
+
   def takeCardAndMana(): Unit = {
     mana += 1
-
-    if (cardDeck.length == 0) {
-      heroHealth -= 10
-    } else {
-      cardHand += cardDeck.last
-      cardDeck = cardDeck.init
-    }
+    takeCard()
   }
 
   def moveCardFromHandToBoard(card: Card): Unit = {
     cardHand -= card
     cardBoard += card
     mana -= card.cost
+  }
+
+  // TODO randomize the card pick
+  def takeCard(): Unit = {
+    if (cardDeck.length == 0) {
+      heroHealth -= 10
+    } else {
+      cardHand += cardDeck.last
+      cardDeck = cardDeck.init
+    }
   }
 }

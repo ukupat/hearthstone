@@ -6,15 +6,15 @@ import scala.collection.mutable.ListBuffer
 object FileReader {
 
   def getCardsFrom(src: String): List[Card] = {
-    var mockFile = "[(\"Boulderfist Ogre\"\n, 6\n, MinionCard [] 6 7 False Nothing),\n\n(\"Elven Archer\"\n, 4\n, MinionCard [UntilDeath [Choose [] [Health Relative (-1)]]] 4 5 False Nothing),\n\n(\"Gnomish Inventor\"\n, 4\n, MinionCard [OnPlay [DrawCard]] 2 4 False Nothing), (\"Spell\", 4, SpellCard [])]"
+    /*var mockFile = "[(\"Boulderfist Ogre\"\n, 6\n, MinionCard [] 6 7 False Nothing),\n\n(\"Elven Archer\"\n, 4\n, MinionCard [UntilDeath [Choose [] [Health Relative (-1)]]] 4 5 False Nothing),\n\n(\"Gnomish Inventor\"\n, 4\n, MinionCard [OnPlay [DrawCard]] 2 4 False Nothing), (\"Spell\", 4, SpellCard [])]"
     mockFile = mockFile.replaceAll("\\r\\n|\\r|\\n","");
     val eachCardRegex = "\\(\".+?\", \\d+?, ((MinionCard \\[.*?\\] \\d+? \\d+? (True|False) ((Just \\w+?)|(Nothing)))|(SpellCard \\[.*?\\]))\\)".r
 
     var cards = new ListBuffer[Card]
     for(m <- eachCardRegex.findAllMatchIn(mockFile)) {
       cards += parseCard(m.toString())
-    }
-    /*
+    }*/
+
     List(
       new MinionCard("Murloc Raider", 1, null, 2, 1, false, MinionType.Murloc),
       new MinionCard(
@@ -40,9 +40,9 @@ object FileReader {
             AnyCreatureFilter(), AttackEffect(CreatureEffectType.Relative, 6)
           )
         )
-      )
-    ) */
-    cards.toList
+      ),
+      new MinionCard("Murloc Raider", 1, null, 2, 1, false, MinionType.Murloc)
+    )
   }
 
   def parseCard(info: String): Card = {
