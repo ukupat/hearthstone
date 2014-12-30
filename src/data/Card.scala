@@ -25,6 +25,8 @@ case class MinionCard(
   var currentAttack: Int = attack
   var currentTaunt: Boolean = taunt
 
+  var used: Boolean = false
+
   override def toString: String = {
     name + "[cost " + cost + "; effect " + effect + "; type " +
       minionType + "; health (current/initial) " + currentHealth + "/" + health + "; attack " + currentAttack + "/" + attack +
