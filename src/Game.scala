@@ -1,8 +1,6 @@
 import data.enum.EffectType
 import data._
 
-import scala.collection.mutable.ListBuffer
-
 class Game(val bluePlayer: Player, val redPlayer: Player) {
 
   var round: Int = 0
@@ -33,7 +31,7 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
   }
 
   private def carryOutAttackerMoves(): Unit = {
-    Logger.sayThat("# Your moves\n")
+    Logger.sayThat("# " + attacker.name + " moves\n")
 
     playFromHand()
     playFromBoard()

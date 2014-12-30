@@ -2,4 +2,4 @@ package data
 
 import data.enum.EffectType._
 
-case class Effect(effect: EffectType, eventEffect: EventEffect) {}
+case class Effect(effect: EffectType, eventEffects: List[EventEffect]) {}

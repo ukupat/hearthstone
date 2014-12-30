@@ -30,9 +30,9 @@ object FileReader {
     var card = None : Option[Card]
 
     if (cardInfo(1).equals("MinionCard"))
-      card = Some(new MinionCard(cardName, manaCost, cardEffect, Integer.parseInt(cardInfo(3)), Integer.parseInt(cardInfo(4)), cardInfo(5).toBoolean, matchMinionType(cardInfo(6))))
+      card = Some(new MinionCard(cardName, manaCost, List(cardEffect), Integer.parseInt(cardInfo(3)), Integer.parseInt(cardInfo(4)), cardInfo(5).toBoolean, matchMinionType(cardInfo(6))))
     else if (cardInfo(1).equals("SpellCard"))
-      card = Some(new SpellCard(cardName, manaCost, cardEffect))
+      card = Some(new SpellCard(cardName, manaCost, List(cardEffect)))
 
     card.orNull(null)
   }
@@ -44,7 +44,7 @@ object FileReader {
     val effectStrip = effectString.substring(1,effectString.length-1)
     val eventEffect = parseEventEffect(effectStrip.replace(effectStrip.split(" ")(0),""))
 
-    new Effect(matchEffectType(effectStrip.split(" ")(0)), eventEffect)
+    new Effect(matchEffectType(effectStrip.split(" ")(0)), List(eventEffect))
   }
 
   def matchEffectType(effectType: String) = effectType match {
@@ -66,11 +66,11 @@ object FileReader {
     creatureEffectString = creatureEffectString.substring(5,creatureEffectString.length - 1)
 
     if (eventEffectType.equals("All")) {
-      return new AllEventEffect(parseEventEffectFilter(eventEffectFilterString), parseCreatureEffect(creatureEffectString))
+      return new AllEventEffect(List(parseEventEffectFilter(eventEffectFilterString)),List(parseCreatureEffect(creatureEffectString)))
     } else if (eventEffectType.equals("Choose")) {
-      return new ChooseEventEffect(parseEventEffectFilter(eventEffectFilterString), parseCreatureEffect(creatureEffectString))
+      return new ChooseEventEffect(List(parseEventEffectFilter(eventEffectFilterString)), List(parseCreatureEffect(creatureEffectString)))
     } else if (eventEffectType.equals("Random")) {
-      return new RandomEventEffect(parseEventEffectFilter(eventEffectFilterString), parseCreatureEffect(creatureEffectString))
+      return new RandomEventEffect(List(parseEventEffectFilter(eventEffectFilterString)), List(parseCreatureEffect(creatureEffectString)))
     }
     null
   }
