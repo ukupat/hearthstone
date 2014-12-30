@@ -1,4 +1,5 @@
-import data.{MinionCard, SpellCard}
+import data.enum.EffectType
+import data._
 
 import scala.collection.mutable.ListBuffer
 
@@ -54,7 +55,8 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
       val cardToMove = attacker.cardHand(answer.toInt)
 
       if (cardToMove.isInstanceOf[SpellCard]) {
-        // TODO spell cards
+        useSpellCardEffect(cardToMove.asInstanceOf[SpellCard])
+        attacker.cardHand -= cardToMove
       } else {
         attacker.moveCardFromHandToBoard(cardToMove)
 
@@ -63,7 +65,6 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
     }
   }
 
-  // TODO taunts
   private def playFromBoard(): Unit = {
     Logger.sayThat("\n## From board\n")
 
@@ -103,6 +104,23 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
       opponent.cardBoard -= target
 
     // TODO effects
+  }
+
+  private def useSpellCardEffect(card: SpellCard): Unit = {
+    val cardEffect = card.effect
+    if (cardEffect.effect == EffectType.OnPlay) {
+      val eventEffect = cardEffect.eventEffect
+      if (eventEffect.isInstanceOf[DrawCardEventEffect]) {
+        Logger.sayThat("Drew card!")
+        attacker.takeCard()
+      } else if (eventEffect.isInstanceOf[ChooseEventEffect]) {
+
+      } else if (eventEffect.isInstanceOf[RandomEventEffect]) {
+
+      } else if (eventEffect.isInstanceOf[AllEventEffect]) {
+
+      }
+    }
   }
 
   private def endRound(): Unit = {
