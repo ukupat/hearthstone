@@ -7,7 +7,6 @@ class Player(val name: String, var cardDeck: List[Card]) {
   var mana: Int = 0
   var cardHand: ListBuffer[Card] = ListBuffer()
   var cardBoard: ListBuffer[Card] = ListBuffer()
-  var usedCardsFromBoard: ListBuffer[Card] = ListBuffer()
 
   override def toString: String = {
     "# Player " + name + "\n\n" +
@@ -48,7 +47,7 @@ class Player(val name: String, var cardDeck: List[Card]) {
       showOnlyTaunts = Referee.hasTauntsOnBoard(this)
 
     for (card <- cardBoard) {
-      if (usedCardsFilter && usedCardsFromBoard.contains(card) || showOnlyTaunts && !card.asInstanceOf[MinionCard].currentTaunt)
+      if (usedCardsFilter && card.asInstanceOf[MinionCard].used || showOnlyTaunts && !card.asInstanceOf[MinionCard].currentTaunt)
         ret += "*. " + card + "\n\n"
       else
         ret += i + ". " + card + "\n\n"

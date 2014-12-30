@@ -63,7 +63,6 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
     }
   }
 
-  // TODO taunts
   private def playFromBoard(): Unit = {
     Logger.sayThat("\n## From board\n")
 
@@ -78,7 +77,7 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
         return
 
       val chosenMinion: MinionCard = attacker.cardBoard(answer.toInt).asInstanceOf[MinionCard]
-      attacker.usedCardsFromBoard += chosenMinion
+      chosenMinion.used = true
 
       answer = Logger.askTarget(opponent)
 
@@ -106,7 +105,8 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
   }
 
   private def endRound(): Unit = {
-    attacker.usedCardsFromBoard = ListBuffer()
+    for (card <- attacker.cardBoard)
+      card.asInstanceOf[MinionCard].used = false
   }
 
   private def attacker: Player = {

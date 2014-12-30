@@ -32,7 +32,7 @@ object Referee {
 
   def isCardFromBoardValid(cardIndex: String, player: Player): Boolean = {
     try {
-      cardIndex.toInt >= 0 && cardIndex.toInt < player.cardBoard.length && !player.usedCardsFromBoard.contains(player.cardBoard(cardIndex.toInt))
+      cardIndex.toInt >= 0 && cardIndex.toInt < player.cardBoard.length && !player.cardBoard(cardIndex.toInt).asInstanceOf[MinionCard].used
     } catch {
       case e: Exception => false
     }
