@@ -1,5 +1,7 @@
 import data.{MinionCard, SpellCard}
 
+import scala.collection.mutable.ListBuffer
+
 class Game(val bluePlayer: Player, val redPlayer: Player) {
 
   var round: Int = 0
@@ -11,6 +13,7 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
     while (round != -1) {
       startNewRound()
       carryOutAttackerMoves()
+      endRound()
 
       round = nextRound()
     }
@@ -31,11 +34,11 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
   private def carryOutAttackerMoves(): Unit = {
     Logger.sayThat("# Your moves\n")
 
-    movesFromHand()
-    movesFromBoard()
+    playFromHand()
+    playFromBoard()
   }
 
-  private def movesFromHand(): Unit = {
+  private def playFromHand(): Unit = {
     Logger.sayThat("## From hand\n")
 
     while (true) {
@@ -60,8 +63,8 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
     }
   }
 
-  // TODO problem that player can infinitely play with minions
-  private def movesFromBoard(): Unit = {
+  // TODO taunts
+  private def playFromBoard(): Unit = {
     Logger.sayThat("\n## From board\n")
 
     while (true) {
@@ -75,11 +78,12 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
         return
 
       val chosenMinion: MinionCard = attacker.cardBoard(answer.toInt).asInstanceOf[MinionCard]
+      attacker.usedCardsFromBoard += chosenMinion
 
       answer = Logger.askTarget(opponent)
 
       if (answer != "h")
-        attack(chosenMinion, opponent.cardBoard(answer.toInt).asInstanceOf[MinionCard])
+        attackMinion(chosenMinion, opponent.cardBoard(answer.toInt).asInstanceOf[MinionCard])
       else
         attackHero(chosenMinion)
     }
@@ -89,7 +93,7 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
     opponent.heroHealth -= minion.currentAttack
   }
 
-  private def attack(minion: MinionCard, target: MinionCard): Unit = {
+  private def attackMinion(minion: MinionCard, target: MinionCard): Unit = {
     target.currentHealth -= minion.currentAttack
     minion.currentHealth -= target.currentAttack
 
@@ -97,6 +101,12 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
       attacker.cardBoard -= minion
     if (target.currentHealth <= 0)
       opponent.cardBoard -= target
+
+    // TODO effects
+  }
+
+  private def endRound(): Unit = {
+    attacker.usedCardsFromBoard = ListBuffer()
   }
 
   private def attacker: Player = {

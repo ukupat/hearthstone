@@ -1,12 +1,13 @@
-import data.Card
+import data.{MinionCard, Card}
 
 import scala.collection.mutable.ListBuffer
 
 class Player(val name: String, var cardDeck: List[Card]) {
   var heroHealth: Int = 30
   var mana: Int = 0
-  var cardBoard: ListBuffer[Card] = ListBuffer()
   var cardHand: ListBuffer[Card] = ListBuffer()
+  var cardBoard: ListBuffer[Card] = ListBuffer()
+  var usedCardsFromBoard: ListBuffer[Card] = ListBuffer()
 
   override def toString: String = {
     "# Player " + name + "\n\n" +
@@ -26,6 +27,28 @@ class Player(val name: String, var cardDeck: List[Card]) {
 
     for (card <- cards) {
       if (manaFilter && mana < card.cost)
+        ret += "*. " + card + "\n\n"
+      else
+        ret += i + ". " + card + "\n\n"
+
+      i += 1
+    }
+    ret
+  }
+
+  def getCardBoardListInString(usedCardsFilter: Boolean, tauntFilter: Boolean): String = {
+    if (cardBoard.length == 0)
+      return "Not a single card\n"
+
+    var ret = ""
+    var i = 0
+    var showOnlyTaunts = false
+
+    if (tauntFilter)
+      showOnlyTaunts = Referee.hasTauntsOnBoard(this)
+
+    for (card <- cardBoard) {
+      if (usedCardsFilter && usedCardsFromBoard.contains(card) || showOnlyTaunts && !card.asInstanceOf[MinionCard].currentTaunt)
         ret += "*. " + card + "\n\n"
       else
         ret += i + ". " + card + "\n\n"

@@ -45,7 +45,7 @@ object Logger {
   }
 
   def askToChooseMinionFromBoard(player: Player): String = {
-    println("\n### Your card board\n\n" + player.getCardsListInString(player.cardBoard, false))
+    println("\n### Your card board\n\n" + player.getCardBoardListInString(true, false))
     println("Q: Which card you want to choose from Board to Attack? (* for no card)")
 
     var answer: String = StdIn.readLine().trim
@@ -58,7 +58,7 @@ object Logger {
   }
 
   def askTarget(player: Player): String = {
-    println("\n### Opponent card board\n\n" + player.getCardsListInString(player.cardBoard, false))
+    println("\n### Opponent card board\n\n" + player.getCardBoardListInString(false, true))
     println("Q: What do you want to attack? (h for hero)")
 
     var answer: String = StdIn.readLine().trim
