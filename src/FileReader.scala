@@ -129,18 +129,17 @@ object FileReader {
   }
 
   def matchParentheses(str: String): String = {
-    var closePos = 2
+    var closePos = 1
     var counter = 1
 
     while (counter > 0) {
+      closePos += 1
       val c = str.charAt(closePos)
 
       if (c == '[')
         counter += 1
       else if (c == ']')
         counter -= 1
-
-      closePos += 1
     }
     str.substring(2, closePos)
   }
