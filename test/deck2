@@ -1,0 +1,32 @@
+[ ("Boulderfist Ogre"
+, 6
+, MinionCard [] 6 7 False Nothing),
+
+("Elven Archer"
+, 4
+, MinionCard [OnPlay [Choose [] [Health Relative (-1)]]] 4 5 False Nothing),
+
+("Gnomish Inventor"
+, 1
+, MinionCard [OnPlay [DrawCard]] 2 4 False Nothing),
+
+("River Crocolisk"
+, 2
+, MinionCard [] 2 3 False Beast),
+
+("NightBlade"
+, 5
+, MinionCard [OnPlay [Choose [AnyCreature] [Health Relative (-3)]]] 4 4 False Nothing),
+
+("Wolfrider"
+, 3
+, MinionCard [] 3 1 False Nothing),
+
+("Golshire Footman"
+, 1
+, MinionCard [] 1 2 True Nothing),
+
+("Arcane explosion"
+, 2
+, SpellCard [OnPlay [All [AnyCreature] [Health Relative (-1)]]])]
+

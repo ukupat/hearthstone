@@ -74,7 +74,6 @@ class Player(val name: String, var cardDeck: List[Card]) {
     mana -= card.cost
   }
 
-  // TODO randomize the card pick
   def takeCard(): Unit = {
     if (cardDeck.length == 0) {
       heroHealth -= 10

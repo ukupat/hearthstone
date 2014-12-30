@@ -3,6 +3,7 @@ import data._
 
 import scala.collection.mutable.ListBuffer
 import scala.io.Source
+import scala.util.Random
 
 object FileReader {
 
@@ -14,7 +15,7 @@ object FileReader {
     for (m <- eachCardRegex.findAllMatchIn(lines))
       cards += parseCard(m.toString())
 
-    cards.toList
+    Random.shuffle(cards.toList)
   }
 
   def parseCard(info: String): Card = {
