@@ -9,9 +9,7 @@ object Logger {
   }
 
   def askCardsFile(player: String): String = {
-      ""
-//    TODO mocked
-//    StdIn.readLine("Please enter the card file name for " + player + + ": ")
+    StdIn.readLine("Please enter the card file name for " + player + ": ")
   }
 
   def startNewRound(round: Int, playerName: String): Unit = {

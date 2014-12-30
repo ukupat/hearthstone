@@ -1,0 +1,17 @@
+[("Murloc Raider"
+, 1
+, MinionCard [] 2 1 False Murloc),
+
+("Raid Leader"
+, 3
+, MinionCard [UntilDeath [All [AnyFriendly] [Attack Absolute 1]]] 2 2 False Nothing),
+
+("Fireball"
+, 4
+, SpellCard [OnPlay [Choose [AnyCreature] [Attack Relative 6]]]),
+
+("Murloc Raider"
+, 1
+, MinionCard [] 2 1 False Murloc)
+]
+

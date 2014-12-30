@@ -9,8 +9,11 @@ object Main {
   }
 
   def constructGame(): Game = {
-    val bluePlayerCards = FileReader.getCardsFrom(Logger.askCardsFile("Blue player"))
-    val redPlayerCards = FileReader.getCardsFrom(Logger.askCardsFile("Red player"))
+    //val bluePlayerCards = FileReader.getCardsFrom(Logger.askCardsFile("Blue player"))
+    //val redPlayerCards = FileReader.getCardsFrom(Logger.askCardsFile("Red player"))
+
+    val bluePlayerCards = FileReader.getCardsFrom("deck1")
+    val redPlayerCards = FileReader.getCardsFrom("deck2")
 
     val bluePlayer = new Player("Blue", bluePlayerCards)
     val redPlayer = new Player("Red", redPlayerCards)
