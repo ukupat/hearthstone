@@ -1,4 +1,7 @@
 
+import data.Card
+
+import scala.collection.mutable.ListBuffer
 import scala.io.StdIn
 
 object Logger {
@@ -52,6 +55,19 @@ object Logger {
 
     while (answer != "*" && !Referee.isCardFromBoardValid(answer, player)) {
       print("-> Invalid input. Write the card index or *, " + player.name + ":\n")
+      answer = StdIn.readLine().trim
+    }
+    answer
+  }
+
+  def askFromFilteredMobs(player: Player, availableCards: ListBuffer[Card]): String = {
+    println("\nQ: Which card do you want to use effect on?")
+    println(player.getCardsListInString(availableCards, false))
+
+    var answer: String = StdIn.readLine().trim
+
+    while (!Referee.isCardFromBoardValid(answer, player)) {
+      print("-> Invalid input. Write the card index or h (hero):\n")
       answer = StdIn.readLine().trim
     }
     answer
