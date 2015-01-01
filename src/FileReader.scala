@@ -8,8 +8,8 @@ import scala.util.Random
 object FileReader {
 
   val cardsRegex = "\\(\".+?\", \\d+?, ((MinionCard \\[.*?\\] \\d+? \\d+? (True|False) ((Murloc)|(Beast)|(Nothing)))|(SpellCard \\[.*?\\]))\\)".r
-  val effectsRegex = "\\w+\\s+\\[(DrawCard|\\w+\\s+\\[(\\w+(\\,\\s*)*)*\\]\\s*\\[(\\w+\\s+\\w+\\s+(\\d+|\\-\\d+)(\\,\\s*)*)+](\\,\\s*)*)+\\]".r
-  val eventEffectsRegex = "DrawCard|\\w+\\s+\\[(\\w+(\\,\\s*)*)*\\]\\s*\\[(\\w+\\s+\\w+\\s+(\\d+|\\-\\d+)(\\,\\s*)*)+](\\,\\s*)*".r
+  val effectsRegex = "\\w+\\s+\\[(DrawCard(\\,\\s*)*|\\w+\\s+\\[(\\w+(\\,\\s*)*)*\\]\\s*\\[(\\w+\\s+\\w+\\s+(\\d+|\\-\\d+)(\\,\\s*)*)+](\\,\\s*)*)+\\]".r
+  val eventEffectsRegex = "DrawCard(\\,\\s*)*|\\w+\\s+\\[(\\w+(\\,\\s*)*)*\\]\\s*\\[(\\w+\\s+\\w+\\s+(\\d+|\\-\\d+)(\\,\\s*)*)+](\\,\\s*)*".r
 
   def getCardsFrom(src: String): List[Card] = {
     val lines = getLinesFromFile(src)
