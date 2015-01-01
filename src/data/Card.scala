@@ -2,12 +2,24 @@ package data
 
 import data.enum.MinionType._
 
-abstract class Card(val name: String, val cost: Int, val effects: List[Effect]) {}
+abstract class Card(val name: String, val cost: Int, val effects: List[Effect]) {
+
+  protected def toStringEffects: String = {
+    if (effects == null)
+      return "Nothing"
+
+    var ret = "\n"
+    for (effect <- effects)
+      ret += "   - " + effect.toString + "\n"
+
+    ret
+  }
+}
 
 case class SpellCard(override val name: String, override val cost: Int, override val effects: List[Effect]) extends Card(name, cost, effects) {
 
   override def toString: String = {
-    name + "[cost " + cost + "; effects " + effects + "]"
+    name + ": cost " + cost + "; effects " + toStringEffects
   }
 }
 
@@ -28,8 +40,9 @@ case class MinionCard(
   var used: Boolean = false
 
   override def toString: String = {
-    name + "[cost " + cost + "; effects " + effects + "; type " +
+
+    name + ": cost " + cost + "; type " +
       minionType + "; health (current/initial) " + currentHealth + "/" + health + "; attack " + currentAttack + "/" + attack +
-      "; taunt " + currentTaunt + "/" + taunt + "]"
+      "; taunt " + currentTaunt + "/" + taunt + "; effects " + toStringEffects
   }
 }

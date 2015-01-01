@@ -4,7 +4,7 @@
 
 ("Raid Leader"
 , 3
-, MinionCard [UntilDeath [All [AnyFriendly] [Attack Absolute 1]]] 2 2 False Nothing),
+, MinionCard [OnPlay [All [AnyFriendly] [Health Absolute 1]], UntilDeath [All [AnyFriendly] [Attack Absolute 1]]] 2 2 False Nothing),
 
 ("Fireball"
 , 4

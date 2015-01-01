@@ -7,85 +7,128 @@ import scala.util.Random
 
 object FileReader {
 
+  val cardsRegex = "\\(\".+?\", \\d+?, ((MinionCard \\[.*?\\] \\d+? \\d+? (True|False) ((Murloc)|(Beast)|(Nothing)))|(SpellCard \\[.*?\\]))\\)".r
+  val effectsRegex = "\\w+\\s+\\[(DrawCard|\\w+\\s+\\[(\\w+(\\,\\s*)*)*\\]\\s*\\[(\\w+\\s+\\w+\\s+(\\d+|\\-\\d+)(\\,\\s*)*)+](\\,\\s*)*)+\\]".r
+  val eventEffectsRegex = "DrawCard|\\w+\\s+\\[(\\w+(\\,\\s*)*)*\\]\\s*\\[(\\w+\\s+\\w+\\s+(\\d+|\\-\\d+)(\\,\\s*)*)+](\\,\\s*)*".r
+
   def getCardsFrom(src: String): List[Card] = {
     val lines = getLinesFromFile(src)
-    val eachCardRegex = "\\(\".+?\", \\d+?, ((MinionCard \\[.*?\\] \\d+? \\d+? (True|False) ((Murloc)|(Beast)|(Nothing)))|(SpellCard \\[.*?\\]))\\)".r
     var cards = new ListBuffer[Card]
 
-    for (m <- eachCardRegex.findAllMatchIn(lines))
+    for (m <- cardsRegex.findAllMatchIn(lines))
       cards += parseCard(m.toString())
 
     Random.shuffle(cards.toList)
   }
 
-  def parseCard(info: String): Card = {
-    val tokens = info.replaceAll("\\(|\\)","").split(",")
+  private def getLinesFromFile(src: String): String = {
+    val source = Source.fromFile(src)
+    val lines = source.mkString
+
+    source.close()
+    lines.replaceAll("\\r\\n|\\r|\\n","")
+  }
+
+  private def parseCard(info: String): Card = {
+    val cardString = info.replaceAll("\\(|\\)", "")
+    println(cardString)
+    val tokens = cardString.split(",")
+    val effectString = "\\[.*\\]".r.findFirstMatchIn(cardString).getOrElse("None").toString
 
     val cardName = tokens(0)
     val manaCost = Integer.parseInt(tokens(1).replace(" ", ""))
-    val effectString = "\\[.*\\]".r.findFirstMatchIn(tokens(2)).getOrElse("None").toString
-    val cardInfo = tokens(2).replace(effectString, "").split(" ")
+    val cardEffects = parseCardEffects(effectString)
+    val cardInfo = cardString.replace(effectString, "").split(",")(2).split(" ")
 
-    val cardEffect = parseCardEffect(effectString)
     var card = None : Option[Card]
 
     if (cardInfo(1).equals("MinionCard"))
-      card = Some(new MinionCard(cardName, manaCost, List(cardEffect), Integer.parseInt(cardInfo(3)), Integer.parseInt(cardInfo(4)), cardInfo(5).toBoolean, matchMinionType(cardInfo(6))))
+      card = Some(new MinionCard(cardName, manaCost, cardEffects, Integer.parseInt(cardInfo(3)), Integer.parseInt(cardInfo(4)), cardInfo(5).toBoolean, matchMinionType(cardInfo(6))))
     else if (cardInfo(1).equals("SpellCard"))
-      card = Some(new SpellCard(cardName, manaCost, List(cardEffect)))
+      card = Some(new SpellCard(cardName, manaCost, cardEffects))
 
     card.orNull(null)
   }
 
-  def parseCardEffect(effectString: String): Effect = {
-    if (effectString.equals("[]"))
+  private def parseCardEffects(effectsString: String): List[Effect] = {
+    if (effectsString.equals("[]"))
       return null // No effect
 
-    val effectStrip = effectString.substring(1,effectString.length-1)
-    val eventEffect = parseEventEffect(effectStrip.replace(effectStrip.split(" ")(0),""))
+    val effects = effectsString.substring(1, effectsString.length - 1)
+    val ret: ListBuffer[Effect] = ListBuffer()
 
-    new Effect(matchEffectType(effectStrip.split(" ")(0)), List(eventEffect))
+    for (m <- effectsRegex.findAllMatchIn(effects)) {
+      val effectString = m.toString().trim()
+      val effectType = matchEffectType(effectString.split(" ")(0))
+      val eventEffects = parseEventEffects(effectString.replace(effectString.split(" ")(0), ""))
+
+      ret += Effect(effectType, eventEffects)
+    }
+    ret.toList
   }
 
-  def matchEffectType(effectType: String) = effectType match {
+  private def matchEffectType(effectType: String) = effectType match {
     case "OnPlay" => EffectType.OnPlay
     case "UntilDeath" => EffectType.UntilDeath
     case "OnDamage" => EffectType.OnDamage
     case "OnDeath" => EffectType.OnDeath
   }
 
-  def parseEventEffect(effectString: String): EventEffect = {
-    val effectStrip = effectString.substring(2,effectString.length-1)
+  private def parseEventEffects(effectString: String): List[EventEffect] = {
+    val eventEffects = effectString.substring(2, effectString.length - 1)
+    val ret: ListBuffer[EventEffect] = ListBuffer()
 
-    if (effectStrip.startsWith("DrawCard")) {
-      return new DrawCardEventEffect()
+    for (m <- eventEffectsRegex.findAllMatchIn(eventEffects)) {
+        ret += parseEventEffect(m.toString().trim())
     }
-    val eventEffectType = effectStrip.split(" ")(0)
-    val eventEffectFilterString = matchParentheses(effectStrip.replace(eventEffectType,""))
-    var creatureEffectString = effectStrip.replace(eventEffectType,"").replace(eventEffectFilterString, "")
-    creatureEffectString = creatureEffectString.substring(5,creatureEffectString.length - 1)
-
-    if (eventEffectType.equals("All")) {
-      return new AllEventEffect(List(parseEventEffectFilter(eventEffectFilterString)),List(parseCreatureEffect(creatureEffectString)))
-    } else if (eventEffectType.equals("Choose")) {
-      return new ChooseEventEffect(List(parseEventEffectFilter(eventEffectFilterString)), List(parseCreatureEffect(creatureEffectString)))
-    } else if (eventEffectType.equals("Random")) {
-      return new RandomEventEffect(List(parseEventEffectFilter(eventEffectFilterString)), List(parseCreatureEffect(creatureEffectString)))
-    }
-    null
+    ret.toList
   }
 
-  def matchMinionType(minionTypeString: String) = minionTypeString match {
+  private def parseEventEffect(eventEffectString: String): EventEffect = {
+    if (eventEffectString.startsWith("DrawCard")) {
+      return DrawCardEventEffect()
+    }
+    val eventEffectType = eventEffectString.split(" ")(0)
+    val eventEffectFiltersString = matchParentheses(eventEffectString.replace(eventEffectType, ""))
+
+    var creatureEffectsString = eventEffectString.replace(eventEffectType, "").replace(eventEffectFiltersString, "")
+    creatureEffectsString = creatureEffectsString.substring(5, creatureEffectsString.length - 1).replace("]", "")
+
+    val filters = parseEventEffectFilters(eventEffectFiltersString)
+    val creatureEffects = parseCreatureEffects(creatureEffectsString)
+
+    if (eventEffectType.equals("All")) {
+      AllEventEffect(filters, creatureEffects)
+    } else if (eventEffectType.equals("Choose")) {
+      ChooseEventEffect(filters, creatureEffects)
+    } else if (eventEffectType.equals("Random")) {
+      RandomEventEffect(filters, creatureEffects)
+    } else {
+      null
+    }
+  }
+
+  private def matchMinionType(minionTypeString: String) = minionTypeString match {
     case "Beast" => MinionType.Beast
     case "Murloc" => MinionType.Murloc
     case _ => null
   }
 
-  def parseEventEffectFilter(filterString: String): Filter = {
-    if (filterString.equals("")) {
+  private def parseEventEffectFilters(filtersString: String): List[Filter] = {
+    if (filtersString.equals(""))
       return null
+
+    val filters = filtersString.split(",")
+    val ret: ListBuffer[Filter] = ListBuffer()
+
+    for (filter <- filters) {
+      ret += parseEventEffectFilter(filter)
     }
-    val filterTypeString = filterString.split(" ")(0)
+    ret.toList
+  }
+
+  private def parseEventEffectFilter(filterString: String): Filter = {
+    val filterTypeString = filterString.trim().replace(",", "")
 
     if (filterTypeString.equals("AnyCreature")) {
       return AnyCreatureFilter()
@@ -107,8 +150,21 @@ object FileReader {
     null
   }
 
-  def parseCreatureEffect(creatureEffectString: String): CreatureEffect = {
-    val tokens = creatureEffectString.split(" ")
+  private def parseCreatureEffects(creatureEffectsString: String): List[CreatureEffect] = {
+    if (creatureEffectsString.equals(""))
+      return null
+
+    val effects = creatureEffectsString.split(",")
+    val ret: ListBuffer[CreatureEffect] = ListBuffer()
+
+    for (effect <- effects) {
+      ret += parseCreatureEffect(effect)
+    }
+    ret.toList
+  }
+
+  private def parseCreatureEffect(creatureEffectString: String): CreatureEffect = {
+    val tokens = creatureEffectString.trim().split(" ")
 
     if (tokens(0).equals("Taunt")) {
       return new TauntEffect(tokens(1).toBoolean)
@@ -123,12 +179,12 @@ object FileReader {
     null
   }
 
-  def matchCreatureEffectType(typeStr: String) = typeStr match {
+  private def matchCreatureEffectType(typeStr: String) = typeStr match {
     case "Relative" => CreatureEffectType.Relative
     case "Absolute" => CreatureEffectType.Absolute
   }
 
-  def matchParentheses(str: String): String = {
+  private def matchParentheses(str: String): String = {
     var closePos = 1
     var counter = 1
 
@@ -142,13 +198,5 @@ object FileReader {
         counter -= 1
     }
     str.substring(2, closePos)
-  }
-
-  private def getLinesFromFile(src: String): String = {
-    val source = Source.fromFile(src)
-    val lines = source.mkString
-
-    source.close()
-    lines.replaceAll("\\r\\n|\\r|\\n","")
   }
 }
