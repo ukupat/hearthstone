@@ -66,8 +66,8 @@ object Logger {
 
     var answer: String = StdIn.readLine().trim
 
-    while (!Referee.isCardFromBoardValid(answer, player)) {
-      print("-> Invalid input. Write the card index or h (hero):\n")
+    while (!Referee.fitsIntoCardList(answer, availableCards)) {
+      print("-> Invalid input. Write the card index:\n")
       answer = StdIn.readLine().trim
     }
     answer

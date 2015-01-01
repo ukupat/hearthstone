@@ -1,4 +1,6 @@
-import data.MinionCard
+import data.{Card, MinionCard}
+
+import scala.collection.mutable.ListBuffer
 
 object Referee {
 
@@ -41,6 +43,14 @@ object Referee {
   def isAttackedCardValid(cardIndex: String, player: Player): Boolean = {
     isCardFromBoardValid(cardIndex, player) &&
       (!hasTauntsOnBoard(player) || player.cardBoard(cardIndex.toInt).asInstanceOf[MinionCard].currentTaunt)
+  }
+
+  def fitsIntoCardList(cardIndex: String, cardList: ListBuffer[Card]): Boolean = {
+    try {
+      cardIndex.toInt >= 0 && cardIndex.toInt < cardList.length
+    } catch {
+      case e: Exception => false
+    }
   }
 
   def isGameOver(redPlayer: Player, bluePlayer: Player): Boolean = {
