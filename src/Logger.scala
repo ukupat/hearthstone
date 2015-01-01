@@ -12,7 +12,7 @@ object Logger {
   }
 
   def askCardsFile(player: String): String = {
-    StdIn.readLine("Please enter the card file name for " + player + ": ")
+    StdIn.readLine("\nPlease enter the card file name for " + player + ": ")
   }
 
   def startNewRound(round: Int, playerName: String): Unit = {

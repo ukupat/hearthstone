@@ -31,7 +31,7 @@ object FileReader {
 
   private def parseCard(info: String): Card = {
     val cardString = info.replaceAll("\\(|\\)", "")
-    println(cardString)
+
     val tokens = cardString.split(",")
     val effectString = "\\[.*\\]".r.findFirstMatchIn(cardString).getOrElse("None").toString
 

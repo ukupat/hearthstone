@@ -9,12 +9,8 @@ object Main {
   }
 
   def constructGame(): Game = {
-    // TODO mocked
-    //val bluePlayerCards = FileReader.getCardsFrom(Logger.askCardsFile("Blue player"))
-    //val redPlayerCards = FileReader.getCardsFrom(Logger.askCardsFile("Red player"))
-
-    val bluePlayerCards = FileReader.getCardsFrom("test/deck1")
-    val redPlayerCards = FileReader.getCardsFrom("test/deck2")
+    val bluePlayerCards = FileReader.getCardsFrom(Logger.askCardsFile("Blue player"))
+    val redPlayerCards = FileReader.getCardsFrom(Logger.askCardsFile("Red player"))
 
     val bluePlayer = new Player("Blue", bluePlayerCards)
     val redPlayer = new Player("Red", redPlayerCards)
