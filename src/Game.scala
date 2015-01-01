@@ -56,9 +56,10 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
       val cardToMove = attacker.cardHand(answer.toInt)
 
       if (cardToMove.isInstanceOf[SpellCard]) {
-        useSpellCardEffect(cardToMove.asInstanceOf[SpellCard])
+        useCardEffect(cardToMove.asInstanceOf[SpellCard])
         attacker.cardHand -= cardToMove
       } else {
+        useCardEffect(cardToMove.asInstanceOf[MinionCard])
         attacker.moveCardFromHandToBoard(cardToMove)
 
         // TODO effects
@@ -132,30 +133,28 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
       target.currentAttack = amount
   }
 
-  private def useSpellCardEffect(card: SpellCard): Unit = {
+  private def useCardEffect(card: Card): Unit = {
     for (cardEffect <- card.effects) {
       if (cardEffect.effect == EffectType.OnPlay) {
         for (eventEffect <- cardEffect.eventEffects) {
-          eventEffect match {
-            case _: DrawCardEventEffect =>
-              Logger.sayThat("Drew card!")
-              attacker.takeCard()
-            case effect: ChooseEventEffect =>
-              val filteredCards = filterCardsWithFilters(effect.filters, card)
-              val target = Logger.askFromFilteredMobs(attacker, filteredCards)
-              Logger.sayThat("Applying effect to " + filteredCards(Integer.valueOf(target)).name)
-              applyEffectsToTarget(effect.creatureEffects, filteredCards(Integer.valueOf(target)))
-            case effect: RandomEventEffect =>
-              val filteredCards = filterCardsWithFilters(eventEffect.asInstanceOf[ChooseEventEffect].filters, card)
-              val randomTarget = Random.shuffle(filteredCards).head
-              Logger.sayThat("Applying effect to " + randomTarget.name)
-              applyEffectsToTarget(effect.creatureEffects, randomTarget)
-            case effect: AllEventEffect =>
-              for (card <- filterCardsWithFilters(effect.filters, card)) {
-                Logger.sayThat("Applying effect to " + card.name)
-                applyEffectsToTarget(effect.creatureEffects, card)
-              }
-            case _ =>
+          if (eventEffect.isInstanceOf[DrawCardEventEffect]) {
+            Logger.sayThat("Drew card!")
+            attacker.takeCard()
+          } else if (eventEffect.isInstanceOf[ChooseEventEffect]) {
+            val filteredCards = filterCardsWithFilters(eventEffect.asInstanceOf[ChooseEventEffect].filters, card)
+            val target = Logger.askFromFilteredMobs(attacker, filteredCards)
+            Logger.sayThat("Applying effect to " + filteredCards(Integer.valueOf(target)).name)
+            applyEffectsToTarget(eventEffect.asInstanceOf[ChooseEventEffect].creatureEffects, filteredCards(Integer.valueOf(target)))
+          } else if (eventEffect.isInstanceOf[RandomEventEffect]) {
+            val filteredCards = filterCardsWithFilters(eventEffect.asInstanceOf[ChooseEventEffect].filters, card)
+            val randomTarget = Random.shuffle(filteredCards).head
+            Logger.sayThat("Applying effect to " + randomTarget.name)
+            applyEffectsToTarget(eventEffect.asInstanceOf[RandomEventEffect].creatureEffects, randomTarget)
+          } else if (eventEffect.isInstanceOf[AllEventEffect]) {
+            for (card <- filterCardsWithFilters(eventEffect.asInstanceOf[AllEventEffect].filters, card)) {
+              Logger.sayThat("Applying effect to " + card.name)
+              applyEffectsToTarget(eventEffect.asInstanceOf[AllEventEffect].creatureEffects, card)
+            }
           }
         }
       }
