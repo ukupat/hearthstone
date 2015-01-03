@@ -1,4 +1,4 @@
-package data
+package hearthstone.data
 
 abstract class EventEffect() {}
 

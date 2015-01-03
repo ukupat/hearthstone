@@ -1,4 +1,7 @@
-import data.{Card, MinionCard}
+package hearthstone.util
+
+import hearthstone.data.{Card, MinionCard}
+import hearthstone.game.Player
 
 import scala.collection.mutable.ListBuffer
 

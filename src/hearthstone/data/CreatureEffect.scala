@@ -1,6 +1,6 @@
-package data
+package hearthstone.data
 
-import data.enum.CreatureEffectType._
+import hearthstone.data.enum.CreatureEffectType._
 
 abstract class CreatureEffect {}
 

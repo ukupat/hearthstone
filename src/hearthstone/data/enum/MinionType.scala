@@ -1,4 +1,4 @@
-package data.enum
+package hearthstone.data.enum
 
 object MinionType extends Enumeration {
   type MinionType = Value

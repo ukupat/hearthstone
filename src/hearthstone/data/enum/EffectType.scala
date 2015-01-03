@@ -1,4 +1,4 @@
-package data.enum
+package hearthstone.data.enum
 
 object EffectType extends Enumeration {
   type EffectType = Value

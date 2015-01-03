@@ -1,4 +1,7 @@
-import data.{MinionCard, Card}
+package hearthstone.game
+
+import hearthstone.data.{Card, MinionCard}
+import hearthstone.util.Referee
 
 import scala.collection.mutable.ListBuffer
 
@@ -81,5 +84,26 @@ class Player(val name: String, var cardDeck: List[Card]) {
       cardHand += cardDeck.last
       cardDeck = cardDeck.init
     }
+  }
+
+  def changeMinionHealth(minion: MinionCard, amount: Int, isRelative: Boolean): Boolean = {
+    if (isRelative)
+      minion.currentHealth += amount
+    else
+      minion.currentHealth = amount
+
+    if (minion.currentHealth <= 0) {
+      cardBoard -= minion
+      true
+    } else {
+      false
+    }
+  }
+
+  def changeMinionAttack(minion: MinionCard, amount: Int, isRelative: Boolean): Unit = {
+    if (isRelative)
+      minion.currentAttack += amount
+    else
+      minion.currentAttack = amount
   }
 }

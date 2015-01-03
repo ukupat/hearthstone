@@ -1,3 +1,5 @@
+import hearthstone.game.{Player, Game}
+import hearthstone.util.{Logger, FileReader}
 
 object Main {
 
@@ -5,7 +7,7 @@ object Main {
     Logger.sayHello()
 
     val game = constructGame()
-    game.startPlaying()
+    game.play()
   }
 
   def constructGame(): Game = {

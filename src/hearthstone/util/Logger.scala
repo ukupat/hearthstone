@@ -1,5 +1,8 @@
+package hearthstone.util
 
-import data.Card
+
+import hearthstone.data.Card
+import hearthstone.game.Player
 
 import scala.collection.mutable.ListBuffer
 import scala.io.StdIn

@@ -1,6 +1,6 @@
-package data
+package hearthstone.data
 
-import data.enum.MinionType._
+import hearthstone.data.enum.MinionType._
 
 abstract class Filter {}
 

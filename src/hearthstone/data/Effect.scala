@@ -1,6 +1,6 @@
-package data
+package hearthstone.data
 
-import data.enum.EffectType._
+import hearthstone.data.enum.EffectType._
 
 case class Effect(effect: EffectType, eventEffects: List[EventEffect]) {
 

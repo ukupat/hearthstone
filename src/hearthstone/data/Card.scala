@@ -1,8 +1,20 @@
-package data
+package hearthstone.data
 
-import data.enum.MinionType._
+import hearthstone.data.enum.EffectType.EffectType
+import hearthstone.data.enum.MinionType._
 
 abstract class Card(val name: String, val cost: Int, val effects: List[Effect]) {
+
+  def getEffectByType(effectType: EffectType): Effect = {
+    if (effects == null)
+      return null
+
+    for (cardEffect <- effects)
+      if (cardEffect.effect == effectType)
+        return cardEffect
+
+    null
+  }
 
   protected def toStringEffects: String = {
     if (effects == null)
@@ -36,11 +48,9 @@ case class MinionCard(
   var currentHealth: Int = health
   var currentAttack: Int = attack
   var currentTaunt: Boolean = taunt
-
   var used: Boolean = false
 
   override def toString: String = {
-
     name + ": cost " + cost + "; type " +
       minionType + "; health (current/initial) " + currentHealth + "/" + health + "; attack " + currentAttack + "/" + attack +
       "; taunt " + currentTaunt + "/" + taunt + "; effects " + toStringEffects
