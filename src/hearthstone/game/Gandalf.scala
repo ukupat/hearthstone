@@ -10,7 +10,7 @@ import scala.util.Random
 
 class Gandalf(attacker: Player, opponent: Player) {
 
-  def playCardEffect(card: Card, effectType: EffectType): Unit = {
+  def playCardEffect(card: PlayCard, effectType: EffectType): Unit = {
     val effect = card.getEffectByType(effectType)
 
     if (effect == null)
@@ -26,7 +26,7 @@ class Gandalf(attacker: Player, opponent: Player) {
     }
   }
 
-  private def playCardEventEffect(eventEffect: EventEffect, card: Card) = eventEffect match {
+  private def playCardEventEffect(eventEffect: EventEffect, card: PlayCard) = eventEffect match {
     case effect: DrawCardEventEffect => playDrawCardEventEffect()
     case effect: ChooseEventEffect => playChooseEventEffect(eventEffect.asInstanceOf[ChooseEventEffect], card)
     case effect: RandomEventEffect => playRandomEventEffect(eventEffect.asInstanceOf[RandomEventEffect], card)
@@ -38,21 +38,21 @@ class Gandalf(attacker: Player, opponent: Player) {
     attacker.takeCard()
   }
 
-  private def playChooseEventEffect(eventEffect: ChooseEventEffect, card: Card): Unit = {
+  private def playChooseEventEffect(eventEffect: ChooseEventEffect, card: PlayCard): Unit = {
     val filteredCards = filterCardsWithFilters(eventEffect.filters, card)
     val target = Logger.askFromFilteredMobs(attacker, filteredCards)
 
     applyEffectsToTarget(eventEffect.creatureEffects, filteredCards(Integer.valueOf(target)).asInstanceOf[MinionCard])
   }
 
-  private def playRandomEventEffect(eventEffect: RandomEventEffect, card: Card): Unit = {
+  private def playRandomEventEffect(eventEffect: RandomEventEffect, card: PlayCard): Unit = {
     val filteredCards = filterCardsWithFilters(eventEffect.filters, card)
     val randomTarget = Random.shuffle(filteredCards).head
 
     applyEffectsToTarget(eventEffect.creatureEffects, randomTarget.asInstanceOf[MinionCard])
   }
 
-  private def playAllEventEffect(eventEffect: AllEventEffect, card: Card): Unit = {
+  private def playAllEventEffect(eventEffect: AllEventEffect, card: PlayCard): Unit = {
     for (card <- filterCardsWithFilters(eventEffect.filters, card)) {
       applyEffectsToTarget(eventEffect.creatureEffects, card.asInstanceOf[MinionCard])
     }
@@ -89,8 +89,8 @@ class Gandalf(attacker: Player, opponent: Player) {
     card.currentTaunt = effect.taunt
   }
 
-  private def filterCardsWithFilters(filters: List[Filter], self: Card): ListBuffer[Card] = {
-    var filteredCards = new ListBuffer[Card]
+  private def filterCardsWithFilters(filters: List[Filter], self: PlayCard): ListBuffer[PlayCard] = {
+    var filteredCards = new ListBuffer[PlayCard]
     for (friendlyCard <- attacker.cardBoard) {
       var passesFilter = true
       for (filter <- filters) {

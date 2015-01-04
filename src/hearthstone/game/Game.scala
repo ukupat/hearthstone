@@ -57,7 +57,7 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
     }
   }
 
-  private def makeMoveFromHand(attackerCard: Card) = attackerCard match {
+  private def makeMoveFromHand(attackerCard: PlayCard) = attackerCard match {
     case attackerCard: SpellCard =>
       new Gandalf(attacker, opponent).playCardEffect(attackerCard, EffectType.OnPlay)
       attacker.cardHand -= attackerCard
@@ -96,7 +96,7 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
   }
 
   private def attackHero(minion: MinionCard): Unit = {
-    opponent.heroHealth -= minion.currentAttack
+    opponent.hero.health -= minion.currentAttack
   }
 
   private def fightBetweenMinions(minion: MinionCard, target: MinionCard): Unit = {

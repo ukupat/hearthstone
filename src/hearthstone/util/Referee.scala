@@ -1,6 +1,6 @@
 package hearthstone.util
 
-import hearthstone.data.{Card, MinionCard}
+import hearthstone.data.{PlayCard, MinionCard}
 import hearthstone.game.Player
 
 import scala.collection.mutable.ListBuffer
@@ -48,7 +48,7 @@ object Referee {
       (!hasTauntsOnBoard(player) || player.cardBoard(cardIndex.toInt).asInstanceOf[MinionCard].currentTaunt)
   }
 
-  def fitsIntoCardList(cardIndex: String, cardList: ListBuffer[Card]): Boolean = {
+  def fitsIntoCardList(cardIndex: String, cardList: ListBuffer[PlayCard]): Boolean = {
     try {
       cardIndex.toInt >= 0 && cardIndex.toInt < cardList.length
     } catch {
@@ -57,6 +57,6 @@ object Referee {
   }
 
   def isGameOver(redPlayer: Player, bluePlayer: Player): Boolean = {
-    redPlayer.heroHealth <= 0 || bluePlayer.heroHealth <= 0
+    redPlayer.hero.health <= 0 || bluePlayer.hero.health <= 0
   }
 }

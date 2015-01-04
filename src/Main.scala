@@ -1,3 +1,4 @@
+import hearthstone.data.HeroCard
 import hearthstone.game.{Player, Game}
 import hearthstone.util.{Logger, FileReader}
 
@@ -14,8 +15,8 @@ object Main {
     val bluePlayerCards = FileReader.getCardsFrom(Logger.askCardsFile("Blue player"))
     val redPlayerCards = FileReader.getCardsFrom(Logger.askCardsFile("Red player"))
 
-    val bluePlayer = new Player("Blue", bluePlayerCards)
-    val redPlayer = new Player("Red", redPlayerCards)
+    val bluePlayer = new Player("Blue", HeroCard(30), bluePlayerCards)
+    val redPlayer = new Player("Red", HeroCard(30), redPlayerCards)
 
     new Game(bluePlayer, redPlayer)
   }

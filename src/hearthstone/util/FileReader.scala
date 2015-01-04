@@ -14,9 +14,9 @@ object FileReader {
   val effectsRegex = "\\w+\\s+\\[(DrawCard(\\,\\s*)*|\\w+\\s+\\[(\\w+(\\,\\s*)*)*\\]\\s*\\[(\\w+\\s+\\w+\\s+(\\d+|\\-\\d+)(\\,\\s*)*)+](\\,\\s*)*)+\\]".r
   val eventEffectsRegex = "DrawCard(\\,\\s*)*|\\w+\\s+\\[(\\w+(\\,\\s*)*)*\\]\\s*\\[(\\w+\\s+\\w+\\s+(\\d+|\\-\\d+)(\\,\\s*)*)+](\\,\\s*)*".r
 
-  def getCardsFrom(src: String): List[Card] = {
+  def getCardsFrom(src: String): List[PlayCard] = {
     val lines = getLinesFromFile(src)
-    var cards = new ListBuffer[Card]
+    var cards = new ListBuffer[PlayCard]
 
     for (m <- cardsRegex.findAllMatchIn(lines))
       cards += parseCard(m.toString())
@@ -32,7 +32,7 @@ object FileReader {
     lines.replaceAll("\\r\\n|\\r|\\n","")
   }
 
-  private def parseCard(info: String): Card = {
+  private def parseCard(info: String): PlayCard = {
     val cardString = info.replaceAll("\\(|\\)", "")
 
     val tokens = cardString.split(",")
@@ -43,7 +43,7 @@ object FileReader {
     val cardEffects = parseCardEffects(effectString)
     val cardInfo = cardString.replace(effectString, "").split(",")(2).split(" ")
 
-    var card = None : Option[Card]
+    var card = None : Option[PlayCard]
 
     if (cardInfo(1).equals("MinionCard"))
       card = Some(new MinionCard(cardName, manaCost, cardEffects, Integer.parseInt(cardInfo(3)), Integer.parseInt(cardInfo(4)), cardInfo(5).toBoolean, matchMinionType(cardInfo(6))))

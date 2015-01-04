@@ -1,27 +1,26 @@
 package hearthstone.game
 
-import hearthstone.data.{Card, MinionCard}
+import hearthstone.data.{HeroCard, PlayCard, MinionCard}
 import hearthstone.util.Referee
 
 import scala.collection.mutable.ListBuffer
 
-class Player(val name: String, var cards: List[Card]) {
-  var heroHealth: Int = 30
+class Player(val name: String, var hero: HeroCard, var cards: List[PlayCard]) {
   var mana: Int = 0
-  var cardDeck: ListBuffer[Card] = constructCardsDeck(cards)
-  var cardHand: ListBuffer[Card] = ListBuffer()
-  var cardBoard: ListBuffer[Card] = ListBuffer()
+  var cardDeck: ListBuffer[PlayCard] = constructCardsDeck(cards)
+  var cardHand: ListBuffer[PlayCard] = ListBuffer()
+  var cardBoard: ListBuffer[PlayCard] = ListBuffer()
 
   override def toString: String = {
     "# Player " + name + "\n\n" +
-    "- Hero health: " + heroHealth +
+    "- Hero health: " + hero.health +
     "\n- Mana amount: " + mana +
     "\n- Cards in deck: " + cardDeck.length +
     "\n- Cards in hand: " + cardHand.length +
     "\n- Cards on board: " + cardBoard.length
   }
 
-  def getCardsListInString(cards: ListBuffer[Card], manaFilter: Boolean): String = {
+  def getCardsListInString(cards: ListBuffer[PlayCard], manaFilter: Boolean): String = {
     if (cards.length == 0)
       return "Not a single card\n"
 
@@ -72,7 +71,7 @@ class Player(val name: String, var cards: List[Card]) {
     takeCard()
   }
 
-  def moveCardFromHandToBoard(card: Card): Unit = {
+  def moveCardFromHandToBoard(card: PlayCard): Unit = {
     cardHand -= card
     cardBoard += card
     mana -= card.cost
@@ -80,7 +79,7 @@ class Player(val name: String, var cards: List[Card]) {
 
   def takeCard(): Unit = {
     if (cardDeck.length == 0) {
-      heroHealth -= 10
+      hero.health -= 10
     } else {
       cardHand += cardDeck.last
       cardDeck = cardDeck.init
@@ -108,7 +107,7 @@ class Player(val name: String, var cards: List[Card]) {
       minion.currentAttack = amount
   }
 
-  private def constructCardsDeck(cards: List[Card]): ListBuffer[Card] = {
+  private def constructCardsDeck(cards: List[PlayCard]): ListBuffer[PlayCard] = {
     for (card <- cards)
       card.owner = this
 
