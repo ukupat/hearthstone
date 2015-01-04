@@ -17,11 +17,11 @@ class Gandalf(attacker: Player, opponent: Player) {
       return
 
     for (eventEffect <- effect.eventEffects) {
-      // REMOVE when effects are done
       effectType match {
         case EffectType.OnPlay => playCardEventEffect(eventEffect, card)
         case EffectType.OnDamage => playCardEventEffect(eventEffect, card)
         case EffectType.OnDeath => playCardEventEffect(eventEffect, card)
+        case _ =>
       }
     }
   }
@@ -49,12 +49,12 @@ class Gandalf(attacker: Player, opponent: Player) {
     val filteredCards = filterCardsWithFilters(eventEffect.filters, card)
     val randomTarget = Random.shuffle(filteredCards).head
 
-    applyEffectsToTarget(eventEffect.creatureEffects, randomTarget.asInstanceOf[MinionCard])
+    applyEffectsToTarget(eventEffect.creatureEffects, randomTarget)
   }
 
   private def playAllEventEffect(eventEffect: AllEventEffect, card: PlayCard): Unit = {
     for (card <- filterCardsWithFilters(eventEffect.filters, card)) {
-      applyEffectsToTarget(eventEffect.creatureEffects, card.asInstanceOf[MinionCard])
+      applyEffectsToTarget(eventEffect.creatureEffects, card)
     }
   }
 
@@ -109,7 +109,6 @@ class Gandalf(attacker: Player, opponent: Player) {
     friendlyCards.append(attacker.hero)
     for (friendlyCard <- friendlyCards) {
       var passesFilter = true
-      println("siin")
       if (filters != null) {
         for (filter <- filters) {
           filter match {
@@ -136,11 +135,16 @@ class Gandalf(attacker: Player, opponent: Player) {
     opponentCards.append(opponent.hero)
     for (enemyCard <- opponentCards) {
       var passesFilter = true
+
       if (filters != null) {
         for (filter <- filters) {
           filter match {
             case _: AnyCreatureFilter =>
+              if (!enemyCard.isInstanceOf[MinionCard])
+                passesFilter = false
             case _: AnyHeroFilter =>
+              if (!enemyCard.isInstanceOf[HeroCard])
+                passesFilter = false
             case _: AnyFriendlyFilter =>
               passesFilter = false
             case a: TypeFilter =>

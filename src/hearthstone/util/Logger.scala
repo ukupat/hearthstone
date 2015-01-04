@@ -83,7 +83,7 @@ object Logger {
 
     var answer: String = StdIn.readLine().trim
 
-    while (answer != "h" && !Referee.isAttackedCardValid(answer, player)) {
+    while ((answer != "h" || answer == "h" && Referee.hasTauntsOnBoard(player)) && !Referee.isAttackedCardValid(answer, player)) {
       print("-> Invalid input. Write the card index or h (hero):\n")
       answer = StdIn.readLine().trim
     }
