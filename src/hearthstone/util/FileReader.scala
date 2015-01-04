@@ -25,11 +25,18 @@ object FileReader {
   }
 
   private def getLinesFromFile(src: String): String = {
-    val source = Source.fromFile(src)
-    val lines = source.mkString
+    try {
+      val source = Source.fromFile(src)
+      val lines = source.mkString
 
-    source.close()
-    lines.replaceAll("\\r\\n|\\r|\\n","")
+      source.close()
+      lines.replaceAll("\\r\\n|\\r|\\n","")
+    } catch {
+      case e: Exception =>
+        Logger.sayThat("\nError: Something went wrong while reading file\n\nBye Bye!")
+        System.exit(1)
+        ""
+    }
   }
 
   private def parseCard(info: String): PlayCard = {
