@@ -41,7 +41,7 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
   }
 
   private def playFromHand(): Unit = {
-    Logger.sayThat("## From hand\n")
+    Logger.sayThat("## From " + attacker.name + " hand\n")
 
     while (true) {
       if (!Referee.hasAnythingToMove(attacker)) {
@@ -71,7 +71,7 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
   }
 
   private def playFromBoard(): Unit = {
-    Logger.sayThat("\n## From board\n")
+    Logger.sayThat("\n## From " + attacker.name + " board\n")
 
     while (true) {
       if (!Referee.hasMinionsOnBoard(attacker)) {
