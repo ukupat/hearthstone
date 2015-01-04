@@ -89,8 +89,8 @@ class Gandalf(attacker: Player, opponent: Player) {
     card.currentTaunt = effect.taunt
   }
 
-  private def filterCardsWithFilters(filters: List[Filter], self: PlayCard): ListBuffer[PlayCard] = {
-    var filteredCards = new ListBuffer[PlayCard]
+  private def filterCardsWithFilters(filters: List[Filter], self: PlayCard): ListBuffer[Card] = {
+    var filteredCards = new ListBuffer[Card]
     for (friendlyCard <- attacker.cardBoard) {
       var passesFilter = true
       for (filter <- filters) {

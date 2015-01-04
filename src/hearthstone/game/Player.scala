@@ -1,15 +1,15 @@
 package hearthstone.game
 
-import hearthstone.data.{HeroCard, PlayCard, MinionCard}
+import hearthstone.data.{Card, HeroCard, PlayCard, MinionCard}
 import hearthstone.util.Referee
 
 import scala.collection.mutable.ListBuffer
 
-class Player(val name: String, var hero: HeroCard, var cards: List[PlayCard]) {
+class Player(val name: String, var hero: HeroCard, var cards: List[Card]) {
   var mana: Int = 0
-  var cardDeck: ListBuffer[PlayCard] = constructCardsDeck(cards)
-  var cardHand: ListBuffer[PlayCard] = ListBuffer()
-  var cardBoard: ListBuffer[PlayCard] = ListBuffer()
+  var cardDeck: ListBuffer[Card] = constructCardsDeck(cards)
+  var cardHand: ListBuffer[Card] = ListBuffer()
+  var cardBoard: ListBuffer[Card] = ListBuffer()
 
   override def toString: String = {
     "# Player " + name + "\n\n" +
@@ -20,7 +20,7 @@ class Player(val name: String, var hero: HeroCard, var cards: List[PlayCard]) {
     "\n- Cards on board: " + cardBoard.length
   }
 
-  def getCardsListInString(cards: ListBuffer[PlayCard], manaFilter: Boolean): String = {
+  def getCardsListInString(cards: ListBuffer[Card], manaFilter: Boolean): String = {
     if (cards.length == 0)
       return "Not a single card\n"
 
@@ -28,7 +28,7 @@ class Player(val name: String, var hero: HeroCard, var cards: List[PlayCard]) {
     var i = 0
 
     for (card <- cards) {
-      if (manaFilter && mana < card.cost)
+      if (manaFilter && mana < card.asInstanceOf[PlayCard].cost)
         ret += "*. " + card + "\n\n"
       else
         ret += i + ". " + card + "\n\n"
@@ -107,9 +107,9 @@ class Player(val name: String, var hero: HeroCard, var cards: List[PlayCard]) {
       minion.currentAttack = amount
   }
 
-  private def constructCardsDeck(cards: List[PlayCard]): ListBuffer[PlayCard] = {
+  private def constructCardsDeck(cards: List[Card]): ListBuffer[Card] = {
     for (card <- cards)
-      card.owner = this
+      card.asInstanceOf[PlayCard].owner = this
 
     cards.to[ListBuffer]
   }

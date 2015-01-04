@@ -1,7 +1,7 @@
 package hearthstone.util
 
 
-import hearthstone.data.PlayCard
+import hearthstone.data.{Card, PlayCard}
 import hearthstone.game.Player
 
 import scala.collection.mutable.ListBuffer
@@ -63,7 +63,7 @@ object Logger {
     answer
   }
 
-  def askFromFilteredMobs(player: Player, availableCards: ListBuffer[PlayCard]): String = {
+  def askFromFilteredMobs(player: Player, availableCards: ListBuffer[Card]): String = {
     println("\nQ: Which card do you want to use effect on?")
     println(player.getCardsListInString(availableCards, false))
 

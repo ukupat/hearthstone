@@ -53,7 +53,7 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
       if (answer == "*") {
         return
       }
-      makeMoveFromHand(attacker.cardHand(answer.toInt))
+      makeMoveFromHand(attacker.cardHand(answer.toInt).asInstanceOf[PlayCard])
     }
   }
 

@@ -2,7 +2,6 @@ package hearthstone.util
 
 import hearthstone.data._
 import hearthstone.data.enum.{CreatureEffectType, EffectType, MinionType}
-import hearthstone.game.Gandalf
 
 import scala.collection.mutable.ListBuffer
 import scala.io.Source

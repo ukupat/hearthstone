@@ -12,6 +12,20 @@
 
 ("Murloc Raider"
 , 1
-, MinionCard [OnDeath [All [AnyCreature] [Health Absolute -3]]] 2 1 False Murloc)
-]
+, MinionCard [OnDeath [All [AnyCreature] [Health Absolute -3]]] 2 1 False Murloc),
 
+("Bluegill Warrior"
+, 2
+, MinionCard [] 2 1 False Murloc),
+
+("Arcane Explosion"
+, 2
+, SpellCard [OnPlay [All [AnyCreature] [Attack]]]),
+
+(""),
+
+(""),
+
+(""),
+
+("")]

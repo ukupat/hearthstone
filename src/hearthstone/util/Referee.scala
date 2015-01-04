@@ -1,6 +1,6 @@
 package hearthstone.util
 
-import hearthstone.data.{PlayCard, MinionCard}
+import hearthstone.data.{Card, PlayCard, MinionCard}
 import hearthstone.game.Player
 
 import scala.collection.mutable.ListBuffer
@@ -9,7 +9,7 @@ object Referee {
 
   def hasAnythingToMove(player: Player): Boolean = {
     for (card <- player.cardHand) {
-      if (card.cost <= player.mana)
+      if (card.asInstanceOf[PlayCard].cost <= player.mana)
         return true
     }
     false
@@ -29,7 +29,7 @@ object Referee {
 
   def isCardFromHandValid(cardIndex: String, player: Player): Boolean = {
     try {
-      cardIndex.toInt >= 0 && cardIndex.toInt < player.cardHand.length && player.cardHand(cardIndex.toInt).cost <= player.mana
+      cardIndex.toInt >= 0 && cardIndex.toInt < player.cardHand.length && player.cardHand(cardIndex.toInt).asInstanceOf[PlayCard].cost <= player.mana
     } catch {
       case e: Exception => false
     }
@@ -48,7 +48,7 @@ object Referee {
       (!hasTauntsOnBoard(player) || player.cardBoard(cardIndex.toInt).asInstanceOf[MinionCard].currentTaunt)
   }
 
-  def fitsIntoCardList(cardIndex: String, cardList: ListBuffer[PlayCard]): Boolean = {
+  def fitsIntoCardList(cardIndex: String, cardList: ListBuffer[Card]): Boolean = {
     try {
       cardIndex.toInt >= 0 && cardIndex.toInt < cardList.length
     } catch {

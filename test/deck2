@@ -28,5 +28,25 @@
 
 ("Arcane explosion"
 , 2
-, SpellCard [OnPlay [All [AnyCreature] [Health Relative (-1)]]])]
+, SpellCard [OnPlay [All [AnyCreature] [Health Relative (-1)]]]).
+
+("Oasis Snapjaw"
+, 4
+, MinionCard [] 2 7 False Beast),
+
+("Polymorph"
+, 4
+, SpellCard [OnPlay [Choose [AnyCreature] [Health Absolute 1, Attack Absolute 1]]]),
+
+("Frostwolf Grunt"
+, 2
+, MinionCard [] 2 2 True Nothing),
+
+("Magma Rager"
+, 3
+, MinionCard [] 5 1 False Nothing),
+
+("Stormwind Champion"
+, 7
+, MinionCard [OnPlay [All [AnyFriendly, AnyCreature] [Health Relative 1, Attack Relative 1th]]])]
 
