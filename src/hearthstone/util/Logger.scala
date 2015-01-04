@@ -10,6 +10,7 @@ import scala.io.StdIn
 object Logger {
 
   def sayHello() = {
+    println("  _    _                 _   _         _                   \n | |  | |               | | | |       | |                  \n | |__| | ___  __ _ _ __| |_| |__  ___| |_ ___  _ __   ___ \n |  __  |/ _ \\/ _` | '__| __| '_ \\/ __| __/ _ \\| '_ \\ / _ \\\n | |  | |  __/ (_| | |  | |_| | | \\__ \\ || (_) | | | |  __/\n |_|  |_|\\___|\\__,_|_|   \\__|_| |_|___/\\__\\___/|_| |_|\\___|\n                                                           \n                                                           ")
     println("\nWelcome!")
     println("\nSheathe your sword, draw your deck, and get ready for Hearthstone - the fast \npaced strategy card game that's easy to learn and massively fun.")
   }
