@@ -4,9 +4,9 @@ import hearthstone.data.enum.EffectType.EffectType
 import hearthstone.data.enum.MinionType._
 import hearthstone.game.Player
 
-abstract class Card() {}
+abstract class Card(val name: String) {}
 
-abstract class PlayCard(val name: String, val cost: Int, val effects: List[Effect]) extends Card {
+abstract class PlayCard(override val name: String, val cost: Int, val effects: List[Effect]) extends Card(name) {
 
   var owner: Player = null
 
@@ -33,7 +33,11 @@ abstract class PlayCard(val name: String, val cost: Int, val effects: List[Effec
   }
 }
 
-case class HeroCard(var health: Int) extends Card {}
+case class HeroCard(override val name: String, var health: Int) extends Card(name) {
+  override def toString: String = {
+    name + ": health " + health
+  }
+}
 
 case class SpellCard(override val name: String, override val cost: Int, override val effects: List[Effect]) extends PlayCard(name, cost, effects) {
 

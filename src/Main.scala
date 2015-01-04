@@ -15,8 +15,8 @@ object Main {
     val bluePlayerCards = FileReader.getCardsFrom(Logger.askCardsFile("Blue player"))
     val redPlayerCards = FileReader.getCardsFrom(Logger.askCardsFile("Red player"))
 
-    val bluePlayer = new Player("Blue", HeroCard(30), bluePlayerCards)
-    val redPlayer = new Player("Red", HeroCard(30), redPlayerCards)
+    val bluePlayer = new Player("Blue", HeroCard("Blue hero", 30), bluePlayerCards)
+    val redPlayer = new Player("Red", HeroCard("Red hero", 30), redPlayerCards)
 
     new Game(bluePlayer, redPlayer)
   }

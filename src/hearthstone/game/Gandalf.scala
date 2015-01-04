@@ -42,7 +42,7 @@ class Gandalf(attacker: Player, opponent: Player) {
     val filteredCards = filterCardsWithFilters(eventEffect.filters, card)
     val target = Logger.askFromFilteredMobs(attacker, filteredCards)
 
-    applyEffectsToTarget(eventEffect.creatureEffects, filteredCards(Integer.valueOf(target)).asInstanceOf[MinionCard])
+    applyEffectsToTarget(eventEffect.creatureEffects, filteredCards(Integer.valueOf(target)))
   }
 
   private def playRandomEventEffect(eventEffect: RandomEventEffect, card: PlayCard): Unit = {
@@ -58,69 +58,96 @@ class Gandalf(attacker: Player, opponent: Player) {
     }
   }
 
-  private def applyEffectsToTarget(creatureEffects: List[CreatureEffect], targetCard: MinionCard) : Unit = {
+  private def applyEffectsToTarget(creatureEffects: List[CreatureEffect], targetCard: Card) : Unit = {
     Logger.sayThat("I: Applying effect to " + targetCard.name)
 
     for (creatureEffect <- creatureEffects) {
       creatureEffect match {
-        case effect: HealthEffect => playHealthEffect(effect.asInstanceOf[HealthEffect], targetCard)
-        case effect: AttackEffect => playAttackEffect(effect.asInstanceOf[AttackEffect], targetCard)
-        case effect: TauntEffect =>  playTauntEffect(effect.asInstanceOf[TauntEffect], targetCard)
+        case effect: HealthEffect => playHealthEffect(effect, targetCard)
+        case effect: AttackEffect => playAttackEffect(effect, targetCard)
+        case effect: TauntEffect =>  playTauntEffect(effect, targetCard)
       }
     }
   }
 
-  private def playHealthEffect(effect: HealthEffect, card: MinionCard): Unit = {
-    val wasKilled = card.owner.changeMinionHealth(card, effect.health, effect.effectType == CreatureEffectType.Relative)
+  private def playHealthEffect(effect: HealthEffect, card: Card): Unit = {
+    if (card.isInstanceOf[PlayCard]) {
+      val playCard = card.asInstanceOf[MinionCard]
+      val wasKilled = playCard.owner.changeMinionHealth(playCard, effect.health, effect.effectType == CreatureEffectType.Relative)
 
-    this.playCardEffect(card, EffectType.OnDamage)
+      this.playCardEffect(playCard, EffectType.OnDamage)
 
-    if (wasKilled) {
-      this.playCardEffect(card, EffectType.OnDeath)
-      this.playCardEffect(card, EffectType.UntilDeath)
+      if (wasKilled) {
+        this.playCardEffect(playCard, EffectType.OnDeath)
+        this.playCardEffect(playCard, EffectType.UntilDeath)
+      }
+    } else {
+      val heroCard = card.asInstanceOf[HeroCard]
+      heroCard.health -= effect.health
     }
   }
 
-  private def playAttackEffect(effect: AttackEffect, card: MinionCard): Unit = {
-    card.owner.changeMinionAttack(card, effect.attack, effect.effectType == CreatureEffectType.Relative)
+  private def playAttackEffect(effect: AttackEffect, card: Card): Unit = {
+    if (card.isInstanceOf[PlayCard]) {
+      card.asInstanceOf[MinionCard].owner.changeMinionAttack(card.asInstanceOf[MinionCard], effect.attack, effect.effectType == CreatureEffectType.Relative)
+    } else {
+      // Do nothing.
+    }
   }
 
-  private def playTauntEffect(effect: TauntEffect, card: MinionCard): Unit = {
-    card.currentTaunt = effect.taunt
+  private def playTauntEffect(effect: TauntEffect, card: Card): Unit = {
+    if (card.isInstanceOf[PlayCard]) {
+      card.asInstanceOf[MinionCard].currentTaunt = effect.taunt
+    } else {
+      // Do nothing.
+    }
   }
 
   private def filterCardsWithFilters(filters: List[Filter], self: PlayCard): ListBuffer[Card] = {
     var filteredCards = new ListBuffer[Card]
-    for (friendlyCard <- attacker.cardBoard) {
+    val friendlyCards = attacker.cardBoard.clone()
+    friendlyCards.append(attacker.hero)
+    for (friendlyCard <- friendlyCards) {
       var passesFilter = true
-      for (filter <- filters) {
-        filter match {
-          case _: AnyCreatureFilter =>
-          case _: AnyHeroFilter =>
-          case _: AnyFriendlyFilter =>
-          case a: TypeFilter =>
-            if (a.minionType != friendlyCard.asInstanceOf[MinionCard].minionType)
-              passesFilter = false
-          case _: SelfFilter =>
-            if (self != friendlyCard)
-              passesFilter = false
+      println("siin")
+      if (filters != null) {
+        for (filter <- filters) {
+          filter match {
+            case _: AnyCreatureFilter =>
+              if (!friendlyCard.isInstanceOf[MinionCard])
+                passesFilter = false
+            case _: AnyHeroFilter =>
+              if (!friendlyCard.isInstanceOf[HeroCard])
+                passesFilter = false
+            case _: AnyFriendlyFilter =>
+            case a: TypeFilter =>
+              if (a.minionType != friendlyCard.asInstanceOf[MinionCard].minionType)
+                passesFilter = false
+            case _: SelfFilter =>
+              if (self != friendlyCard)
+                passesFilter = false
+          }
         }
       }
       if (passesFilter)
         filteredCards += friendlyCard
     }
-    for (enemyCard <- opponent.cardBoard) {
+    val opponentCards = opponent.cardBoard.clone()
+    opponentCards.append(opponent.hero)
+    for (enemyCard <- opponentCards) {
       var passesFilter = true
-      for (filter <- filters) {
-        filter match {
-          case _: AnyCreatureFilter =>
-          case _: AnyHeroFilter =>
-          case _: AnyFriendlyFilter =>
-            passesFilter = false
-          case a: TypeFilter =>
-            if (a.minionType != enemyCard.asInstanceOf[MinionCard].minionType)
+      if (filters != null) {
+        for (filter <- filters) {
+          filter match {
+            case _: AnyCreatureFilter =>
+            case _: AnyHeroFilter =>
+            case _: AnyFriendlyFilter =>
               passesFilter = false
-          case _: SelfFilter =>
+            case a: TypeFilter =>
+              if (a.minionType != enemyCard.asInstanceOf[MinionCard].minionType)
+                passesFilter = false
+            case _: SelfFilter =>
+          }
         }
       }
       if (passesFilter)

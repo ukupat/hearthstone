@@ -59,4 +59,11 @@ object Referee {
   def isGameOver(redPlayer: Player, bluePlayer: Player): Boolean = {
     redPlayer.hero.health <= 0 || bluePlayer.hero.health <= 0
   }
+
+  def whoIsWinner(redPlayer: Player, bluePlayer: Player): Player = {
+    if (redPlayer.hero.health <= 0)
+      bluePlayer
+    else
+      redPlayer
+  }
 }

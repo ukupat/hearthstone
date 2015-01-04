@@ -94,7 +94,7 @@ object Logger {
     println(message)
   }
 
-  def sayGameResultsAndEndIt(): Unit = {
-    println("\nGame is over!")
+  def sayGameResultsAndEndIt(winner: String): Unit = {
+    println("\nGame is over! \nWinner is: " + winner)
   }
 }

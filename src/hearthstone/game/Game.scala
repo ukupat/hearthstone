@@ -125,7 +125,7 @@ class Game(val bluePlayer: Player, val redPlayer: Player) {
 
   private def nextRound(): Int = {
     if (Referee.isGameOver(redPlayer, bluePlayer)) {
-      Logger.sayGameResultsAndEndIt()
+      Logger.sayGameResultsAndEndIt(Referee.whoIsWinner(redPlayer, bluePlayer).name)
       -1
     } else {
       round + 1
