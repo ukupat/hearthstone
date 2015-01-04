@@ -2,6 +2,14 @@
 , 1
 , MinionCard [] 2 1 False Murloc),
 
+("Murloc Raider"
+, 1
+, MinionCard [] 2 1 False Murloc),
+
+("Magma Rager"
+, 3
+, MinionCard [] 5 1 False Nothing),
+
 ("Raid Leader"
 , 3
 , MinionCard [OnPlay [All [AnyFriendly] [Health Absolute 1]], UntilDeath [All [AnyFriendly] [Attack Absolute 1]]] 2 2 False Nothing),
@@ -18,14 +26,30 @@
 , 2
 , MinionCard [] 2 1 False Murloc),
 
+("Golshire Footman"
+, 1
+, MinionCard [] 1 2 True Nothing),
+
 ("Arcane Explosion"
 , 2
 , SpellCard [OnPlay [All [AnyCreature] [Attack]]]),
 
-(""),
+("Arcane Explosion"
+, 2
+, SpellCard [OnPlay [All [AnyCreature] [Attack]]]),
 
-(""),
+("War Golem"
+, 7
+, MinionCard [] 7 7 False Nothing),
 
-(""),
+("Core Hound"
+, 7
+, MinionCard [] 9 5 False Nothing),
 
-("")]
+("FrostBolt"
+, 2
+, SpellCard [OnPlay [Choose [AnyCreature] [Health Relative -3]]]),
+
+("Booty Bay Bodyguard"
+, 5
+, MinionCard [] 5 4 True Nothing)]

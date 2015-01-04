@@ -30,6 +30,10 @@
 , 2
 , SpellCard [OnPlay [All [AnyCreature] [Health Relative (-1)]]]).
 
+("Arcane explosion"
+, 2
+, SpellCard [OnPlay [All [AnyCreature] [Health Relative (-1)]]]).
+
 ("Oasis Snapjaw"
 , 4
 , MinionCard [] 2 7 False Beast),
@@ -49,4 +53,3 @@
 ("Stormwind Champion"
 , 7
 , MinionCard [OnPlay [All [AnyFriendly, AnyCreature] [Health Relative 1, Attack Relative 1th]]])]
-
