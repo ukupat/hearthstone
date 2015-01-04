@@ -71,15 +71,18 @@ class Gandalf(attacker: Player, opponent: Player) {
   }
 
   private def playHealthEffect(effect: HealthEffect, card: MinionCard): Unit = {
-    // TODO effect filter check to who this effect should be on (attacker or opponent)
-    val wasKilled = opponent.changeMinionHealth(card, effect.health, effect.effectType == CreatureEffectType.Relative)
+    val wasKilled = card.owner.changeMinionHealth(card, effect.health, effect.effectType == CreatureEffectType.Relative)
 
-    // TODO other effects if given minion was killed/damaged/until death
+    this.playCardEffect(card, EffectType.OnDamage)
+
+    if (wasKilled) {
+      this.playCardEffect(card, EffectType.OnDeath)
+      this.playCardEffect(card, EffectType.UntilDeath)
+    }
   }
 
   private def playAttackEffect(effect: AttackEffect, card: MinionCard): Unit = {
-    // TODO effect filter check to who this effect should be on (attacker or opponent)
-    opponent.changeMinionAttack(card, effect.attack, effect.effectType == CreatureEffectType.Relative)
+    card.owner.changeMinionAttack(card, effect.attack, effect.effectType == CreatureEffectType.Relative)
   }
 
   private def playTauntEffect(effect: TauntEffect, card: MinionCard): Unit = {

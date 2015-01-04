@@ -39,7 +39,7 @@ object Logger {
 
   def askWhichCardToUseFromHand(player: Player): String = {
     println("\n### Your card hand\n\n" + player.getCardsListInString(player.cardHand, true))
-    println("Q: Which spell card do you want to use or Which minion you want to put on board? (* for no card)")
+    println("Q: Which card from hand do you want to use/put on board? (* for no card)")
 
     var answer: String = StdIn.readLine().trim
 

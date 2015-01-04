@@ -5,9 +5,10 @@ import hearthstone.util.Referee
 
 import scala.collection.mutable.ListBuffer
 
-class Player(val name: String, var cardDeck: List[Card]) {
+class Player(val name: String, var cards: List[Card]) {
   var heroHealth: Int = 30
   var mana: Int = 0
+  var cardDeck: ListBuffer[Card] = constructCardsDeck(cards)
   var cardHand: ListBuffer[Card] = ListBuffer()
   var cardBoard: ListBuffer[Card] = ListBuffer()
 
@@ -105,5 +106,12 @@ class Player(val name: String, var cardDeck: List[Card]) {
       minion.currentAttack += amount
     else
       minion.currentAttack = amount
+  }
+
+  private def constructCardsDeck(cards: List[Card]): ListBuffer[Card] = {
+    for (card <- cards)
+      card.owner = this
+
+    cards.to[ListBuffer]
   }
 }

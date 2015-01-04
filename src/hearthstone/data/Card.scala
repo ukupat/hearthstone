@@ -2,8 +2,11 @@ package hearthstone.data
 
 import hearthstone.data.enum.EffectType.EffectType
 import hearthstone.data.enum.MinionType._
+import hearthstone.game.Player
 
 abstract class Card(val name: String, val cost: Int, val effects: List[Effect]) {
+
+  var owner: Player = null
 
   def getEffectByType(effectType: EffectType): Effect = {
     if (effects == null)
