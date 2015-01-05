@@ -1,6 +1,5 @@
 package hearthstone.util
 
-
 import hearthstone.data.{Card, PlayCard}
 import hearthstone.game.Player
 
@@ -20,7 +19,7 @@ object Logger {
   }
 
   def startNewRound(round: Int, playerName: String): Unit = {
-    println("\n\n\n\n\n\n###############################\n#          New Round          #\n###############################\n")
+    println("\n\n\n _   _                ______                      _ \n| \\ | |               | ___ \\                    | |\n|  \\| | _____      __ | |_/ /___  _   _ _ __   __| |\n| . ` |/ _ \\ \\ /\\ / / |    // _ \\| | | | '_ \\ / _` |\n| |\\  |  __/\\ V  V /  | |\\ \\ (_) | |_| | | | | (_| |\n\\_| \\_/\\___| \\_/\\_/   \\_| \\_\\___/ \\__,_|_| |_|\\__,_|\n                                                    \n                                                    \n")
     println("\n" + round + ". round, " + playerName + " player turn\n")
   }
 
