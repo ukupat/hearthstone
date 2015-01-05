@@ -10,8 +10,8 @@ import scala.util.Random
 object FileReader {
 
   val cardsRegex = "\\(\".+?\", \\d+?, ((MinionCard \\[.*?\\] \\d+? \\d+? (True|False) ((Murloc)|(Beast)|(Nothing)))|(SpellCard \\[.*?\\]))\\)".r
-  val effectsRegex = "\\w+\\s+\\[(DrawCard(\\,\\s*)*|\\w+\\s+\\[(\\w+(\\,\\s*)*)*\\]\\s*\\[(\\w+\\s+\\w+\\s+(\\d+|\\-\\d+)(\\,\\s*)*)+](\\,\\s*)*)+\\]".r
-  val eventEffectsRegex = "DrawCard(\\,\\s*)*|\\w+\\s+\\[(\\w+(\\,\\s*)*)*\\]\\s*\\[(\\w+\\s+\\w+\\s+(\\d+|\\-\\d+)(\\,\\s*)*)+](\\,\\s*)*".r
+  val effectsRegex = "\\w+\\s+\\[(((.+?\\[.*?\\]\\s+?\\[.*?\\])|(DrawCard))(\\,\\s+?)*?)+?\\]".r
+  val eventEffectsRegex = "\\w+?\\s+?\\[.*?\\]\\s+?\\[.*?\\]|DrawCard".r
 
   def getCardsFrom(src: String): List[PlayCard] = {
     val lines = getLinesFromFile(src)
@@ -88,7 +88,7 @@ object FileReader {
     val ret: ListBuffer[EventEffect] = ListBuffer()
 
     for (m <- eventEffectsRegex.findAllMatchIn(eventEffects)) {
-        ret += parseEventEffect(m.toString().trim())
+      ret += parseEventEffect(m.toString().trim())
     }
     ret.toList
   }
@@ -126,7 +126,6 @@ object FileReader {
   private def parseEventEffectFilters(filtersString: String): List[Filter] = {
     if (filtersString.equals(""))
       return null
-
     val filters = filtersString.split(",")
     val ret: ListBuffer[Filter] = ListBuffer()
 
@@ -138,7 +137,6 @@ object FileReader {
 
   private def parseEventEffectFilter(filterString: String): Filter = {
     val filterTypeString = filterString.trim().replace(",", "")
-
     if (filterTypeString.equals("AnyCreature")) {
       return AnyCreatureFilter()
     } else if (filterTypeString.equals("AnyHero")) {
@@ -149,12 +147,10 @@ object FileReader {
       return SelfFilter()
     } else if (filterTypeString.equals("Type")) {
       return TypeFilter(matchMinionType(filterString.split(" ")(1)))
-    } else if (filterTypeString.equals("Not")) {
-      val nextFilterString = filterString.replace(filterTypeString,"")
-      return new NotFilter(parseEventEffectFilter(nextFilterString.substring(2,nextFilterString.length-1)))
-    } else if (filterTypeString.equals("Any")) {
-      val nextFilterString = filterString.replace(filterTypeString,"")
-      return new AnyFilter(parseEventEffectFilter(nextFilterString.substring(2,nextFilterString.length-1)))
+    } else if (filterTypeString.startsWith("Not")) {
+      return NotFilter(parseEventEffectFilter(filterTypeString.substring(5,filterTypeString.length-1)))
+    } else if (filterTypeString.startsWith("Any")) {
+      return AnyFilter(parseEventEffectFilter(filterTypeString.substring(5,filterTypeString.length-1)))
     }
     null
   }

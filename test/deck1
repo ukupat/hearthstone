@@ -16,7 +16,7 @@
 
 ("Fireball"
 , 4
-, SpellCard [OnPlay [Choose [AnyCreature] [Attack Relative 6]]]),
+, SpellCard [OnPlay [Choose [Any [Not []]] [Attack Relative 6], DrawCard]]),
 
 ("Murloc Raider"
 , 1
@@ -32,11 +32,11 @@
 
 ("Arcane Explosion"
 , 2
-, SpellCard [OnPlay [All [AnyCreature] [Attack]]]),
+, SpellCard [OnPlay [All [AnyCreature] [Health Relative -1]]]),
 
 ("Arcane Explosion"
 , 2
-, SpellCard [OnPlay [All [AnyCreature] [Attack]]]),
+, SpellCard [OnPlay [All [AnyCreature] [Health Relative -1]]]),
 
 ("War Golem"
 , 7
